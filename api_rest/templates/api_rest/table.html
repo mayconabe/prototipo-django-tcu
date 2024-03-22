@@ -30,51 +30,6 @@
     width: 100%;
     border: 1px solid #ccd3df;
   }
-  .table-header {
-    display: flex;
-    width: 100%;
-    background: #ccd3df;
-    padding: 18px 0;
-  }
-  .table-row {
-    display: flex;
-  }
-  .table-row:nth-of-type(odd) {
-    background: #eee;
-  }
-  .table-data {
-    font-size: 14px;
-  }
-  .table-data, .header__item {
-    flex: 1 1 20%;
-    text-align: center;
-    display: flex;
-    place-items: center;
-    justify-content: center;
-  }
-  .filter__link {
-    color: #495c79;
-    text-decoration: none;
-    position: relative;
-    display: inline-block;
-    /* padding-left: 24px;
-    padding-right: 24px; */
-  }
-  .filter__link::after {
-    content: '';
-    position: absolute;
-    right: -18px;
-    color: white;
-    font-size: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-  .filter__link.desc::after {
-    content: '(desc)';
-  }
-  .filter__link.asc::after {
-    content: '(asc)';
-  }
 
   .topnav {
     overflow: hidden;
@@ -92,11 +47,6 @@
     font-size: 17px;
   }
 
-  /* .topnav a:hover {
-    background-color: #ddd;
-    color: black;
-  } */
-
   .topnav a.active {
     color: white;
   }
@@ -105,13 +55,18 @@
     margin: auto;
     width: 90% !important;
     max-height: 80vh !important;
-    margin-top: 60px;
+    margin-top: 40px;
   }
 
   .table-container {
       overflow-x: auto; /* Adiciona rolagem horizontal se necessário */
       border: 0.5px solid #ccd3df;
-    }
+  }
+
+  .font {
+    font-size: 13px;
+    font-family: 'Source Sans Pro', sans-serif;
+  }
 
 </style>
 <body>
@@ -134,7 +89,7 @@
   <div class="center table-container">
     <div class="row justify-content-center">
       <div class="col-auto">
-        <table class="table table-sm table-hover table-bordered table-striped">
+        <table class="table table-sm table-hover table-bordered table-striped font">
           <thead>
             <tr class="text-center">
               {% for column in page_obj.object_list.columns %}
@@ -155,25 +110,43 @@
       </div>
     </div>
   </div>
-  <!-- <div class="container">
-    <div class="table">
-      <div style="display: flex; width: 100%;">
-        {% for column in page_obj.object_list.columns %}
-          <div style="padding: 3.2px; border: 1px solid gray;">{{ column }}</div>
-        {% endfor %}
-      </div>
-      {% for index, row in page_obj.object_list.iterrows %}
-        <div style="display: flex;">
-        
-            {% for value in row %}
-              <div style="border: 1px solid green;">{{ value }}</div>
-            {% endfor %}
-        
-        </div>
-      {% endfor %}
-    </div>
-  </div> -->
 
+  {% if page_obj.has_other_pages %}
+    <ul class="pagination justify-content-center" style="margin-top: 15px;">
+      {% if page_obj.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
+        </li>
+      {% else %}
+        <li class="disabled page-item">
+          <span class="page-link">&laquo;</span>
+        </li>
+      {% endif %}
+      {% for i in page_obj.paginator.page_range %}
+        {% if page_obj.number == i %}
+          <li class="active page-item">
+            <span class="page-link"> 
+              {{ i }}
+            </span>
+          </li>
+        {% else %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+          </li>
+        {% endif %}
+      {% endfor %}
+      {% if page_obj.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a>
+        </li>
+      {% else %}
+        <li class="disabled page-item">
+          <span class="page-link">&raquo;</span>
+        </li>
+      {% endif %}
+    </ul>
+  {% endif %}
+  
   {% endblock %}
 
     

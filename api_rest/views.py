@@ -8,7 +8,7 @@ import pandas as pd
 import os
 from django.conf import settings
 
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def home(request):
     return redirect('login')
@@ -98,6 +98,15 @@ def table(request):
         groups = request.user.groups.all()
         #drop the columns Unnamed: 0
         df = df.drop(columns=['Unnamed: 0'])
+
+        page = request.GET.get('page', 1)
         paginator = Paginator(df, 50)
 
-        return render(request, 'api_rest/table.html', {'data': df.to_dict('records'), 'files': Arquivos.objects.all(), 'groups': groups, 'page_obj': paginator})
+        try:
+            dataframe = paginator.page(page)
+        except PageNotAnInteger:
+            dataframe = paginator.page(1)
+        except EmptyPage:
+            dataframe = paginator.page(paginator.num_pages)
+
+        return render(request, 'api_rest/table.html', {'data': df.to_dict('records'), 'files': Arquivos.objects.all(), 'groups': groups, 'page_obj': dataframe})
