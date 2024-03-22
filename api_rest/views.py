@@ -100,7 +100,7 @@ def table(request):
         df = df.drop(columns=['Unnamed: 0'])
 
         page = request.GET.get('page', 1)
-        paginator = Paginator(df, 50)
+        paginator = Paginator(df, 25)
 
         try:
             dataframe = paginator.page(page)
