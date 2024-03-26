@@ -93,6 +93,7 @@
           <thead>
             <tr class="text-center">
               {% for column in page_obj.object_list.columns %}
+                <th scrope="col">Ação</div>
                 <th scrope="col">{{ column }}</div>
               {% endfor %}
             </tr>
@@ -100,6 +101,7 @@
           <tbody>
             {% for index, row in page_obj.object_list.iterrows %}
               <tr>
+                <td><img src="../api_rest/static/images/escrever.png" width="25px" height="25px"></td>
                 {% for value in row %}
                   <td>{{ value }}</td>
                 {% endfor %} 
