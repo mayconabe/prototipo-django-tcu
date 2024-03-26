@@ -1,4 +1,4 @@
-{% load static %}
+ {% load static %}
 {% load crispy_forms_tags %}
 <!DOCTYPE html>
 <html lang="en">
@@ -76,18 +76,20 @@
       <a class="active" id="logout" href="{% url 'logout' %}">Sair</a>
     {% endif %}
   </div>
-  <form class="container">
+  <form class="container" action="{% url 'table' %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
     <div>
+        <input type="hidden" id="id" name="id" value="{{ ID }}">
         <label for="exampleTextarea" class="form-label mt-4">Justificativa:</label>
-        <textarea class="form-control" id="exampleTextarea" rows="3"></textarea>
+        <textarea class="form-control" id="exampleTextarea" rows="3" name="justificativa">{{ JUSTIFICATIVAS }}</textarea>
     </div>
 
     <div>
         <label for="formFile" class="form-label mt-4">Carregar Arquivo:</label>
-        <input class="form-control" type="file" id="formFile">
+        <input class="form-control" type="file" id="formFile" name="arquivo">
     </div>
     <div style="margin-top: 30px; display: flex; justify-content: end;">
-      <button type="button" class="btn btn-success">Enviar</button>
+      <button type="submit" class="btn btn-success">Enviar</button>
     </div>
     
   </form>

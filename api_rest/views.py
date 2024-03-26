@@ -50,7 +50,7 @@ def create_user(request):
     return render(request, 'registration/create_user.html')
 
 @login_required
-def table(request):
+def table(request, _id=None):
     # O código de conexão precisa ser alterado aqui.
     # Onde ele está pegando e salvando o arquivo
     path = os.path.join(settings.BASE_DIR, 'justificativas.xlsx')
@@ -61,13 +61,14 @@ def table(request):
     df = pd.read_excel(path)
 
     #adicionando uma coluna id
-    df['id'] = df.index
+    df['ID'] = df.index
 
     if request.method == 'POST':
+        print(request)
 
         id = request.POST['id']
         justificativa = request.POST['justificativa']
-        data_justificativa = datetime.now()
+        data_justificativa = datetime.now().strftime('%d/%m/%Y %H:%M')
         usuario = request.user.username
         arquivo = request.FILES.get('arquivo')
 
@@ -82,9 +83,9 @@ def table(request):
             arquivo = Arquivos(id_arquivo=id, arquivo=file_path, nome=arquivo.name)
             arquivo.save()
 
-        df.loc[df['id'] == int(id), 'JUSTIFICATIVAS'] = justificativa
-        df.loc[df['id'] == int(id), 'DATA_CARGA'] = data_justificativa
-        df.loc[df['id'] == int(id), 'NOME'] = usuario
+        df.loc[df['ID'] == int(id), 'JUSTIFICATIVAS'] = justificativa
+        df.loc[df['ID'] == int(id), 'DATA_CARGA'] = data_justificativa
+        df.loc[df['ID'] == int(id), 'NOME'] = usuario
 
         df.to_excel(path, index=False)
         
@@ -94,6 +95,11 @@ def table(request):
 
         if request.user.first_login:
             return redirect('change_password')
+
+        if _id != None:
+            print(_id)
+        
+            return render(request, 'api_rest/edit_table.html', {'JUSTIFICATIVAS': df[df['ID'] == _id]['JUSTIFICATIVAS'].values[0], 'ID': _id})
 
         groups = request.user.groups.all()
         #drop the columns Unnamed: 0

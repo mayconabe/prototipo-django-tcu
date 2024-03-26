@@ -92,7 +92,8 @@
         <table class="table table-sm table-hover table-bordered table-striped font">
           <thead class="sticky-top top-0">
             <tr class="text-center">
-              <th scrope="col">Ação</div>
+              <th scrope="col">Ação</th>
+              <th scrope="col">Arquivos</th>
               {% for column in page_obj.object_list.columns %}
                 <th scrope="col">{{ column }}</div>
               {% endfor %}
@@ -102,7 +103,12 @@
             {% for index, row in page_obj.object_list.iterrows %}
               {% if row.ENTIDADE == user.entidade and row.UF == user.uf %}
                 <tr>
-                  <td><img src="../api_rest/static/images/escrever.png" width="25px" height="25px"></td>
+                  <td><a href="{{ row.ID }}"><img src="../api_rest/static/images/escrever.png" width="25px" height="25px"></a></td>
+                  {% for file in files %}
+                    {% if file.id_arquivo == row.ID %}
+                      <td style="display: flex;"><a href="../documentos/{{ row.ID }}/{{ file.nome }}" style="font-size: 14px;" download>{{ file.nome }}</a></td>
+                    {% endif %}
+                  {% endfor %}
                   {% for value in row %}
                       <td>{{ value }}</td>
                   {% endfor %} 

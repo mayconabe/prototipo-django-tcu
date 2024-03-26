@@ -1,0 +1,366 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registros</title>
+</head>
+<style>
+  @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700');
+  *, *:before, *:after {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Source Sans Pro', sans-serif;
+    margin: 0;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+  }
+  .container {
+    padding: 80px;
+    margin-right: auto;
+    margin-left: auto;
+    min-height: 100vh;
+  }
+  .table {
+    width: 100%;
+    border: 1px solid #ccd3df;
+  }
+  .table-header {
+    display: flex;
+    width: 100%;
+    background: #ccd3df;
+    padding: 18px 0;
+  }
+  .table-row {
+    display: flex;
+  }
+  .table-row:nth-of-type(odd) {
+    background: #eee;
+  }
+  .table-data {
+    font-size: 14px;
+  }
+  .table-data, .header__item {
+    flex: 1 1 20%;
+    text-align: center;
+    display: flex;
+    place-items: center;
+    justify-content: center;
+  }
+  .filter__link {
+    color: #495c79;
+    text-decoration: none;
+    position: relative;
+    display: inline-block;
+    /* padding-left: 24px;
+    padding-right: 24px; */
+  }
+  .filter__link::after {
+    content: '';
+    position: absolute;
+    right: -18px;
+    color: white;
+    font-size: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .filter__link.desc::after {
+    content: '(desc)';
+  }
+  .filter__link.asc::after {
+    content: '(asc)';
+  }
+
+  .topnav {
+    overflow: hidden;
+    background-color: #2a406f;
+    display: flex;
+    justify-content: space-between; /* Alinha os itens à esquerda e à direita */
+    align-items: center; /* Centraliza verticalmente */
+  }
+
+  .topnav a {
+    float: left;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+  }
+
+  /* .topnav a:hover {
+    background-color: #ddd;
+    color: black;
+  } */
+
+  .topnav a.active {
+    color: white;
+  }
+
+  .height-table-data {
+    height: 130px;
+    font-size: 14px;
+  }
+
+  .justificativa {
+    /* remove lines */
+    resize: none;
+    border: none;
+    background-color: #eee;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.2;
+    min-height: calc(1.2em * 4);
+    width: 92%;
+    height: 92%;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 14px;
+   } 
+
+   input[type="file"]{
+    display: none;
+   }
+
+    .file {
+      width: 100px;
+      padding: 6px 29px;
+      background-color: #ccd3df;
+      color: black;
+      border-radius: 5px;
+      cursor: pointer;
+      border: none;
+      height: 35px;
+      font-size: 14px;
+    }
+
+    input[type="submit"] {
+      display: none;
+    }
+
+    .enviar {
+      width: 100px;
+      padding: 1px 10px;
+      background-color: #04aa6d;
+      color: black;
+      border-radius: 5px;
+      cursor: pointer;
+      border: none;
+      height: 35px;
+      margin-top: 12px;
+      font-size: 14px;
+    }
+
+    .arquivo {
+      display: flex;
+      flex-direction: column;
+      width: 365px;
+      padding: 12px;
+      max-height: 130px;
+      overflow-y: scroll;
+    }
+
+    .acao {
+      flex: 1 1 10%;
+      text-align: center;
+      display: flex;
+      place-items: center;
+      justify-content: center;
+    }
+    
+    .acao-header {
+      flex: 1 1 10%;
+      text-align: center;
+      display: flex;
+      place-items: center;
+      justify-content: center;
+    }
+
+    .borda-baixo {
+      border-bottom: 1px solid #ccd3df;
+    }
+
+    .borda-direita {
+      border-right: 1px solid #ccd3df;
+    }
+
+    #entidade {
+      flex: 1 1 8%;
+      text-align: center;
+      display: flex;
+      place-items: center;
+      justify-content: center;
+      /* padding: 10px 0 0 10px; */
+    }
+
+    .header-entidade {
+      flex: 1 1 8%;
+      text-align: center;
+      display: flex;
+      place-items: center;
+      justify-content: center;
+    }
+
+    #uf {
+      flex: 1 1 5%;
+      text-align: center;
+      display: flex;
+      place-items: center;
+      justify-content: center;  
+    }
+
+    .header-uf {
+      flex: 1 1 5%;
+      text-align: center;
+      display: flex;
+      place-items: center;
+      justify-content: center;
+    }
+
+    #descricao {
+      flex: 1 1 15%;
+      text-align: justify;
+      display: flex;
+      padding: 10px 10px 10px 10px;
+    }
+
+    .header-descricao {
+      flex: 1 1 15%;
+      text-align: center;
+      display: flex;
+      place-items: center;
+      justify-content: center;
+    }
+
+    #justificativa {
+      flex: 1 1 15%;
+      text-align: center;
+      display: flex;
+      place-items: center;
+      justify-content: center;
+      /* padding: 10px 0 0 10px; */
+    }
+
+    .header-justificativa {
+      flex: 1 1 15%;
+      text-align: center;
+      display: flex;
+      place-items: center;
+      justify-content: center;
+    }
+
+    #data-justificativa {
+      flex: 1 1 10%;
+      text-align: center;
+      display: flex;
+      place-items: center;
+      justify-content: center;
+      /* padding: 10px 0 0 10px; */
+    }
+
+    .header-data {
+      flex: 1 1 10%;
+      text-align: center;
+      display: flex;
+      place-items: center;
+      justify-content: center;
+    }
+
+    #usuario {
+      flex: 1 1 10%;
+      text-align: center;
+      display: flex;
+      place-items: center;
+      justify-content: center;
+      /* padding: 10px 0 0 10px; */
+    }
+
+    .header-usuario {
+      flex: 1 1 10%;
+      text-align: center;
+      display: flex;
+      place-items: center;
+      justify-content: center;
+    }
+
+</style>
+<body>
+  {% block content %}
+  <div class="topnav" style="display: flex;place-items: center;">
+    <a class="active" href="{% url 'table' %}"><img src="https://logodownload.org/wp-content/uploads/2017/11/tcu-logo-tribunal-de-contas-da-uniao.png" width="45" height="35"></a>
+    {% for group in groups %}
+    {% if group.name == 'Gerenciador de Contas' %}
+      <a class="active" href="{% url 'create_user' %}">Criar Usuário</a>
+    {% elif request.user.is_superuser %}
+      <a class="active" href="{% url 'create_user' %}">Criar Usuário</a>
+    {% endif %}
+    {% endfor %}
+    {% if request.user.is_authenticated %}
+    <a class="active" id="logout" href="{% url 'logout' %}">Sair</a>
+    {% endif %}
+  </div>
+  
+  <div class="container">
+    <div class="table">
+      <div class="table-header">
+        <div class="acao-header"><a id="acoes" class="acao-header filter__link filter__link--number">Ações</a></div>
+        <div class="header-entidade"><a id="wins" class="filter__link filter__link--number">Entidade</a></div>
+        <div class="header-uf"><a id="draws" class="filter__link filter__link--number">UF</a></div>
+        <div class="header-descricao"><a id="total" class="filter__link filter__link--number">Descrição</a></div>
+        <div class="header-justificativa"><a id="total" class="filter__link filter__link--number">Justificativa</a></div>
+        <div class="header-data"><a id="total" class="filter__link filter__link--number">Data Justificativa</a></div>
+        <div class="header-usuario"><a id="total" class="filter__link filter__link--number">Usuário</a></div>
+        <div class="header__item"><a id="total" class="filter__link filter__link--number">Arquivo</a></div>
+      </div>
+      {% for registro in data %}
+      {% if registro.ENTIDADE == user.entidade and registro.UF == user.uf %}
+      <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="table-content">	
+          <div class="table-row">	
+            <input type="hidden" id="data" name="data" value="{{ data }}">
+            <input type="hidden" id="id" name="id" value="{{ registro.ID }}">
+            <div class="acao height-table-data borda-baixo borda-direita">
+              <div class="buttons">
+                <label class="file">
+                  <input type="file" id="arquivo" name="arquivo">
+                  Upload
+                </label>
+                <button class="enviar" type="submit" value="Submit">Enviar</button>
+              </div>
+            </div>
+            <div class="height-table-data borda-baixo borda-direita" id="entidade">{{ registro.ENTIDADE }}</div>
+            <div class="height-table-data borda-baixo borda-direita" id="uf">{{ registro.UF }}</div>
+            <div class="height-table-data borda-baixo borda-direita" id="descricao">{{ registro.CAT_OBJETO }}</div>
+            <!-- Mudar para um pop-up -->
+            <div class="table-data height-table-data borda-baixo borda-direita" id="justificativa">
+              <textarea class="justificativa" name="justificativa" maxlength="200">{{ registro.JUSTIFICATIVAS }}</textarea>
+            </div>
+            <!-- Status alerta, se não tiver justificativa está pedente, concluido -->
+            <div class="table-data height-table-data borda-baixo borda-direita" id="data-justificativa">{{ registro.DATA_CARGA }}</div>
+            <div class="table-data height-table-data borda-baixo borda-direita" id="usuario">{{ registro.NOME }}</div>
+            <div class="arquivo borda-baixo">
+              {% for file in files %}
+              {% if file.id_arquivo == registro.ID %}
+                <a href="../documentos/{{ registro.ID }}/{{ file.nome }}" style="font-size: 14px;" download>{{ file.nome }}</a>
+              {% endif %}
+            {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <!-- show fields of files -->
+        
+        
+      </form>
+      
+      {% endif %}
+      {% endfor %}
+  {% endblock %}
+
+    
+</body>
+</html>
