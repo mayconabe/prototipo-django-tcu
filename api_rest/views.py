@@ -10,6 +10,9 @@ from django.conf import settings
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+from datahelper.db import SQL
+from datahelper.query import get_query
+
 def home(request):
     return redirect('login')
 
@@ -51,23 +54,17 @@ def create_user(request):
 
 @login_required
 def table(request, _id=None):
-    # O código de conexão precisa ser alterado aqui.
-    # Onde ele está pegando e salvando o arquivo
-    path = os.path.join(settings.BASE_DIR, 'justificativas.xlsx')
+    def execute_query(query_name):
+        query = get_query(query_name)
+        df = sql.as_df(query)
+        return df
 
-    uf_usuario = request.user.uf
-    
-    #permissão de leitura
-    assert os.path.isfile(path)
-    #lendo o arquivo
-    df = pd.read_excel(path)
+    os.environ['APP_ENV']= 'desenv' # desenv é o default
 
-    #adicionando uma coluna id
-    df['ID'] = df.index
+    sql = SQL("conn_sql_server", fast_executemany=True)
+    df =  execute_query("consulta_alertas")
 
     if request.method == 'POST':
-        print(request)
-
         id = request.POST['id']
         justificativa = request.POST['justificativa']
         data_justificativa = datetime.now().strftime('%d/%m/%Y %H:%M')
@@ -89,7 +86,12 @@ def table(request, _id=None):
         df.loc[df['ID'] == int(id), 'DATA_CARGA'] = data_justificativa
         df.loc[df['ID'] == int(id), 'NOME'] = usuario
 
-        df.to_excel(path, index=False)
+        entidade_uf = df.loc[df['ID'] == id, 'ENTIDADE_UF'].iloc[0]
+        query = "DELETE FROM [BDU_SECEXDESENVOLVIMENTO].[ss].[TPL_TESTES_V2] WHERE ENTIDADE_UF = '{}'".format(entidade_uf)
+        sql.execute_ddl(query)
+        dfi = df[df.ENTIDADE_UF==entidade_uf].copy()
+
+        sql.bulk_insert(dfi,"tab_resultado")
         
         return redirect('table')
 
@@ -110,8 +112,6 @@ def table(request, _id=None):
         page = request.GET.get('page', 1)
         df = df[df['UF'] == request.user.uf]
         paginator = Paginator(df, 25)
-
-        
 
         try:
             dataframe = paginator.page(page)
