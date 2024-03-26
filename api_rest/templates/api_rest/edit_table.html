@@ -1,0 +1,98 @@
+{% load static %}
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://bootswatch.com/5/lux/bootstrap.min.css">
+  <title>Registros</title>
+</head>
+<style>
+  @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700');
+  *, *:before, *:after {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Source Sans Pro', sans-serif;
+    margin: 0;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+  }
+  .container {
+    padding: 80px;
+    margin-right: auto;
+    margin-left: auto;
+    min-height: 100vh;
+  }
+  .topnav {
+    overflow: hidden;
+    background-color: #2a406f;
+    display: flex;
+    justify-content: space-between; /* Alinha os itens à esquerda e à direita */
+    align-items: center; /* Centraliza verticalmente */
+  }
+
+  .topnav a {
+    float: left;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+  }
+
+  .topnav a.active {
+    color: white;
+  }
+
+  .center {
+    margin: auto;
+    width: 90% !important;
+    max-height: 80vh !important;
+    margin-top: 40px;
+  }
+
+  .table-container {
+      overflow-x: auto; /* Adiciona rolagem horizontal se necessário */
+      border: 0.5px solid #ccd3df;
+  }
+
+
+</style>
+<body>
+  {% block content %}
+  
+  <div class="topnav" style="display: flex;place-items: center;">
+    <a class="active" href="{% url 'table' %}"><img src="https://logodownload.org/wp-content/uploads/2017/11/tcu-logo-tribunal-de-contas-da-uniao.png" width="45" height="35"></a>
+    {% for group in groups %}
+      {% if group.name == 'Gerenciador de Contas' %}
+        <a class="active" href="{% url 'create_user' %}">Criar Usuário</a>
+      {% elif request.user.is_superuser %}
+        <a class="active" href="{% url 'create_user' %}">Criar Usuário</a>
+      {% endif %}
+    {% endfor %}
+    {% if request.user.is_authenticated %}
+      <a class="active" id="logout" href="{% url 'logout' %}">Sair</a>
+    {% endif %}
+  </div>
+  <form class="container">
+    <div>
+        <label for="exampleTextarea" class="form-label mt-4">Justificativa:</label>
+        <textarea class="form-control" id="exampleTextarea" rows="3"></textarea>
+    </div>
+
+    <div>
+        <label for="formFile" class="form-label mt-4">Carregar Arquivo:</label>
+        <input class="form-control" type="file" id="formFile">
+    </div>
+    <div style="margin-top: 30px; display: flex; justify-content: end;">
+      <button type="button" class="btn btn-success">Enviar</button>
+    </div>
+    
+  </form>
+  {% endblock %}
+
+    
+</body>
+</html>

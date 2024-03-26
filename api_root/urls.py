@@ -18,13 +18,13 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
-from api_rest.views import home, table, change_password, create_user
+from api_rest.views import home, table, change_password, create_user, edit
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home, name='home'),
     path('table/', table, name='table'),
-    # path('table/<int:id>', table, 'edit-table')
+    path('edit', edit, name='edit-table'),
 
 
     path('accounts/', include('django.contrib.auth.urls')),

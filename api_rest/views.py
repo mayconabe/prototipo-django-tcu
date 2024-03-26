@@ -110,3 +110,8 @@ def table(request):
             dataframe = paginator.page(paginator.num_pages)
 
         return render(request, 'api_rest/table.html', {'data': df.to_dict('records'), 'files': Arquivos.objects.all(), 'groups': groups, 'page_obj': dataframe})
+    
+def edit(request):
+
+    if request.method == 'GET':
+        return render(request, 'api_rest/edit_table.html', {})
