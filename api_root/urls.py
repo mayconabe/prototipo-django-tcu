@@ -24,6 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home, name='home'),
     path('table/', table, name='table'),
+    # path('table/<int:id>', table, 'edit-table')
 
 
     path('accounts/', include('django.contrib.auth.urls')),

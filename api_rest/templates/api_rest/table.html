@@ -90,22 +90,24 @@
     <div class="row justify-content-center">
       <div class="col-auto">
         <table class="table table-sm table-hover table-bordered table-striped font">
-          <thead>
+          <thead class="sticky-top top-0">
             <tr class="text-center">
+              <th scrope="col">Ação</div>
               {% for column in page_obj.object_list.columns %}
-                <th scrope="col">Ação</div>
                 <th scrope="col">{{ column }}</div>
               {% endfor %}
             </tr>
           </thead>
           <tbody>
             {% for index, row in page_obj.object_list.iterrows %}
-              <tr>
-                <td><img src="../api_rest/static/images/escrever.png" width="25px" height="25px"></td>
-                {% for value in row %}
-                  <td>{{ value }}</td>
-                {% endfor %} 
-              </tr>
+              {% if row.ENTIDADE == user.entidade and row.UF == user.uf %}
+                <tr>
+                  <td><img src="../api_rest/static/images/escrever.png" width="25px" height="25px"></td>
+                  {% for value in row %}
+                      <td>{{ value }}</td>
+                  {% endfor %} 
+                </tr>
+              {% endif %}
             {% endfor %}  
           </tbody>
         </table>
