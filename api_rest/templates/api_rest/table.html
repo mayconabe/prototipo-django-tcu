@@ -103,12 +103,16 @@
             {% for index, row in page_obj.object_list.iterrows %}
               {% if row.ENTIDADE == user.entidade and row.UF == user.uf %}
                 <tr>
-                  <td><a href="{{ row.ID }}"><img src="../api_rest/static/images/escrever.png" width="25px" height="25px"></a></td>
-                  {% for file in files %}
-                    {% if file.id_arquivo == row.ID %}
-                      <td style="display: flex;"><a href="../documentos/{{ row.ID }}/{{ file.nome }}" style="font-size: 14px;" download>{{ file.nome }}</a></td>
-                    {% endif %}
-                  {% endfor %}
+                  <td>
+                    <a href="{{ row.ID }}"><img src="../api_rest/static/images/escrever.png" width="25px" height="25px"></a>
+                  </td>
+                  <td>
+                    {% for file in files %}
+                      {% if file.id_arquivo == row.ID %}
+                        <a href="../documentos/{{ row.ID }}/{{ file.nome }}" download>{{ file.nome }}</a><br><br>
+                      {% endif %}
+                    {% endfor %}
+                  </td>
                   {% for value in row %}
                       <td>{{ value }}</td>
                   {% endfor %} 
@@ -120,7 +124,7 @@
       </div>
     </div>
   </div>
-  {% if row.ENTIDADE == user.entidade and row.UF == user.uf %}
+  
     {% if page_obj.has_other_pages %}
       <ul class="pagination justify-content-center" style="margin-top: 15px;">
         {% if page_obj.has_previous %}
@@ -156,7 +160,6 @@
         {% endif %}
       </ul>
     {% endif %}
-  {% endif %}
   
   {% endblock %}
 

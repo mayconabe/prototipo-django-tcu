@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 
 from .models import User, Arquivos
@@ -54,6 +54,8 @@ def table(request, _id=None):
     # O código de conexão precisa ser alterado aqui.
     # Onde ele está pegando e salvando o arquivo
     path = os.path.join(settings.BASE_DIR, 'justificativas.xlsx')
+
+    uf_usuario = request.user.uf
     
     #permissão de leitura
     assert os.path.isfile(path)
@@ -106,7 +108,10 @@ def table(request, _id=None):
         df = df.drop(columns=['Unnamed: 0'])
 
         page = request.GET.get('page', 1)
+        df = df[df['UF'] == request.user.uf]
         paginator = Paginator(df, 25)
+
+        
 
         try:
             dataframe = paginator.page(page)
